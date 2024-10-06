@@ -7,9 +7,14 @@ import { Button } from "@/components/ui/button";
 import StarterKit from "@tiptap/starter-kit";
 import { submitPost } from "./actions";
 import "./styles.css";
+import { useSubmitPostMutation } from "./mutations";
+import { LoadingButton } from "@/components/loadingButton";
 
 export default function PostEditor() {
   const { user } = useSession();
+
+  const mutation = useSubmitPostMutation();
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -28,8 +33,10 @@ export default function PostEditor() {
       blockSeparator: "\n",
     }) || "";
 
-  async function onSubmit() {
-    await submitPost(input).then(() => editor?.commands.clearContent());
+  function onSubmit() {
+    mutation.mutate(input, {
+      onSuccess: () => editor?.commands.clearContent(),
+    });
   }
   return (
     <div className="flex flex-col gap-5 rounded-2xl bg-card p-5 shadow-sm">
@@ -41,13 +48,14 @@ export default function PostEditor() {
         />
       </div>
       <div className="flex justify-end">
-        <Button
+        <LoadingButton
+          isLoading={mutation.isPending}
           onClick={onSubmit}
           disabled={!input.trim()}
           className="min-w-20"
         >
           Post
-        </Button>
+        </LoadingButton>
       </div>
     </div>
   );
