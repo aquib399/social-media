@@ -46,7 +46,7 @@ export async function SignIn(cred: SignInValues): Promise<{ error: string }> {
     );
     return redirect("/");
   } catch (error) {
-    console.log("Signin error", error);
+    console.error("Signin error", error);
     if (isRedirectError(error)) throw error;
     return {
       error: "Something went wrong",

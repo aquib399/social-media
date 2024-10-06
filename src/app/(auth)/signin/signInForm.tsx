@@ -5,8 +5,8 @@ import { LoadingButton } from "@/components/loadingButton";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
-import { toast } from "@/hooks/use-toast";
 import { SignIn } from "./actions";
 import {
   Form,
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 
 export default function SignInForm() {
+  const { toast } = useToast();
   const [error, setError] = useState<string>();
   const [isPending, startTransition] = useTransition();
 
@@ -31,7 +32,6 @@ export default function SignInForm() {
 
   async function onSubmit(data: SignInValues) {
     setError(undefined);
-    console.log({ data });
     startTransition(async () => {
       const { error } = await SignIn(data);
       if (error) {

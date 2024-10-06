@@ -1,3 +1,5 @@
+import SearchButton from "@/components/searchButton";
+import { UserButton } from "@/components/userButton";
 import Link from "next/link";
 
 export default function Navbar() {
@@ -7,6 +9,8 @@ export default function Navbar() {
         <Link href={"/"} className="text-2xl font-bold">
           Drift
         </Link>
+        <SearchButton />
+        <UserButton />
       </div>
     </header>
   );

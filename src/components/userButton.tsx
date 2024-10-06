@@ -1,0 +1,84 @@
+"use client";
+
+import { Dot, LogOut, Monitor, Moon, Sun, UserIcon } from "lucide-react";
+import { useSession } from "@/app/(main)/sessionProvider";
+import { signOut } from "@/app/(auth)/actions";
+import { useTheme } from "next-themes";
+import UserAvatar from "./userAvatar";
+import Link from "next/link";
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
+  DropdownMenuSubContent,
+} from "./ui/dropdown-menu";
+
+export function UserButton({ className }: { className?: string }) {
+  const { user } = useSession();
+  const { theme, setTheme } = useTheme();
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild className={className}>
+        <div>
+          <UserAvatar user={user} />
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>Signed In as @{user.username}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <Link href={"/users/" + user.username}>
+          <DropdownMenuItem>
+            <UserIcon className="mr-2 size-4" />
+            Profile
+          </DropdownMenuItem>
+        </Link>
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            {
+              {
+                system: <Monitor className="mr-2 size-4" />,
+                light: <Sun className="mr-2 size-4" />,
+                dark: <Moon className="mr-2 size-4" />,
+              }[theme as string]
+            }
+            Theme
+          </DropdownMenuSubTrigger>
+          <DropdownMenuPortal>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem onClick={() => setTheme("system")}>
+                <Monitor className="mr-2 size-4" />
+                System default
+                {theme === "system" && <Dot />}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("light")}>
+                <Sun className="mr-2 size-4" />
+                Light
+                {theme === "light" && <Dot />}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>
+                <Moon className="mr-2 size-4" />
+                Dark
+                {theme === "dark" && <Dot />}
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuPortal>
+        </DropdownMenuSub>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => {
+            signOut();
+          }}
+        >
+          <LogOut className="mr-2 size-4" />
+          Sign Out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}

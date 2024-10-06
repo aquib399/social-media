@@ -60,7 +60,7 @@ export async function SignUp(cred: SignUpValues): Promise<{ error: string }> {
     return redirect("/");
   } catch (error) {
     if (isRedirectError(error)) throw error;
-    console.log("Signup error", error);
+    console.error("Signup error", error);
     return {
       error: "Something went wrong",
     };

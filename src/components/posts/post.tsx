@@ -1,0 +1,31 @@
+import { formatRelativeDate } from "@/lib/utils";
+import { PostData } from "@/lib/types";
+import UserAvatar from "../userAvatar";
+import Link from "next/link";
+
+export default function Post({ post }: { post: PostData }) {
+  return (
+    <article className="space-y-3 rounded-2xl bg-card p-5 shadow-sm">
+      <div className="flex flex-wrap gap-3">
+        <Link href={"/users/" + post.user.username}>
+          <UserAvatar user={post.user} />
+        </Link>
+        <div>
+          <Link
+            href={"/users/" + post.user.username}
+            className="block font-medium hover:underline"
+          >
+            {post.user.displayName}
+          </Link>
+          <Link
+            href={"/posts/" + post.id}
+            className="block text-sm text-muted-foreground hover:underline"
+          >
+            {formatRelativeDate(post.createdAt)}
+          </Link>
+        </div>
+      </div>
+      <div className="whitespace-pre-wrap break-words">{post.content}</div>
+    </article>
+  );
+}
