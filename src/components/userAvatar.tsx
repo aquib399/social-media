@@ -8,11 +8,14 @@ export default function UserAvatar({
     displayName: string | null;
     avatarUrl: string | null;
   };
-  className?: String;
+  className?: string;
 }) {
   return (
-    <Avatar>
-      <AvatarImage src={user.avatarUrl ?? "https://i.pravatar.cc/300"} />
+    <Avatar className={className}>
+      <AvatarImage
+        src={user.avatarUrl ?? "https://i.pravatar.cc/300"}
+        alt={user.displayName + " profile"}
+      />
       <AvatarFallback>{user.displayName}</AvatarFallback>
     </Avatar>
   );

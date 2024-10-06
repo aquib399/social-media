@@ -1,5 +1,10 @@
 {
-  "name": "social-media",
+  "name": "drift-social-media",
+  "author": {
+    "name": "Aquib Alam",
+    "email": "aquibalam399@gmail.com",
+    "url": "https://github.com/aquib399"
+  },
   "version": "0.1.0",
   "private": true,
   "scripts": {
