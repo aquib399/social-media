@@ -1,6 +1,6 @@
+import { formatDistanceToNowStrict, formatDate } from "date-fns";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { formatDistanceToNowStrict, formatDate } from "date-fns";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -11,7 +11,7 @@ export function formatRelativeDate(from: Date) {
   if (curr.getTime() - from.getTime() < 24 * 60 * 60 * 1000)
     return formatDistanceToNowStrict(from, { addSuffix: true });
 
-  return formatDate(from, "dd MMMM yyyy");
+  return formatDate(from, "dd MMM yyyy");
 }
 
 export function formatNumber(number: number): string {

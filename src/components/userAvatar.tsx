@@ -10,10 +10,11 @@ export default function UserAvatar({
   };
   className?: string;
 }) {
+  const random = Math.floor(Math.random() * 100) + 250;
   return (
     <Avatar className={className}>
       <AvatarImage
-        src={user.avatarUrl ?? "https://i.pravatar.cc/300"}
+        src={user.avatarUrl ?? "https://i.pravatar.cc/" + random}
         alt={user.displayName + " profile"}
       />
       <AvatarFallback>{user.displayName}</AvatarFallback>

@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { Bell, Bookmark, Home, Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default function MenuBar({ className }: { className?: string }) {

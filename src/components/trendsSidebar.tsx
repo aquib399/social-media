@@ -1,13 +1,13 @@
-import { Loader2, UserPlus } from "lucide-react";
 import { userDataSelect } from "@/lib/types";
 import { unstable_cache } from "next/cache";
+import { formatNumber } from "@/lib/utils";
 import { validateRequest } from "@/auth";
+import { Loader2 } from "lucide-react";
 import UserAvatar from "./userAvatar";
 import { Button } from "./ui/button";
 import prisma from "@/lib/prisma";
 import { Suspense } from "react";
 import Link from "next/link";
-import { formatNumber } from "@/lib/utils";
 
 export async function TrendsSidebar() {
   return (
