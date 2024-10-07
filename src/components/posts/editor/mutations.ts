@@ -1,12 +1,12 @@
 import { useToast } from "@/hooks/use-toast";
+import { PostsPage } from "@/lib/types";
+import { submitPost } from "./actions";
 import {
   InfiniteData,
   QueryFilters,
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { submitPost } from "./actions";
-import { PostsPage } from "@/lib/types";
 
 export function useSubmitPostMutation() {
   const { toast } = useToast();
@@ -43,7 +43,7 @@ export function useSubmitPostMutation() {
           return !query.state.data;
         },
       });
-			
+
       toast({
         title: "Post created",
         description: "Your post has been created successfully",
