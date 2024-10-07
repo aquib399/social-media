@@ -32,6 +32,7 @@ async function WhoToFollow() {
     },
     select: userDataSelect,
     take: 5,
+    cacheStrategy: { ttl: 300 },
   });
   return (
     <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm">

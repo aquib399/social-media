@@ -16,6 +16,7 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
       take: pageSize + 1,
       cursor: cursor ? { id: cursor } : undefined,
+      cacheStrategy: { ttl: 600 },
     });
     const nextCursor = posts.length > pageSize ? posts[pageSize].id : null;
 
