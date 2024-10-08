@@ -37,12 +37,12 @@ export default function PostEditor() {
     });
   }
   return (
-    <div className="flex flex-col gap-5 rounded-2xl bg-card p-5 shadow-sm">
+    <div className="flex flex-col gap-5 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
       <div className="flex gap-5">
         <UserAvatar user={user} className="hidden sm:inline" />
         <EditorContent
           editor={editor}
-          className="max-h-80 w-full overflow-y-auto rounded-2xl bg-background px-5 py-3"
+          className="max-h-80 w-full overflow-y-auto rounded-xl bg-background px-5 py-3 sm:rounded-2xl"
         />
       </div>
       <div className="flex justify-end">

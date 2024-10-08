@@ -22,7 +22,7 @@ export default function MenuBar({ className }: { className?: string }) {
         title="Notifications"
         asChild
       >
-        <Link href={"/notifications"}>
+        <Link href={"#notifications"}>
           <Bell />
           <span className="hidden lg:inline">Notificaions</span>
         </Link>
@@ -33,7 +33,7 @@ export default function MenuBar({ className }: { className?: string }) {
         title="Messages"
         asChild
       >
-        <Link href={"/messages"}>
+        <Link href={"#messages"}>
           <Mail />
           <span className="hidden lg:inline">Messages</span>
         </Link>
@@ -44,7 +44,7 @@ export default function MenuBar({ className }: { className?: string }) {
         title="Bookmarks"
         asChild
       >
-        <Link href={"/bookmarks"}>
+        <Link href={"#bookmarks"}>
           <Bookmark />
           <span className="hidden lg:inline">Bookmarks</span>
         </Link>

@@ -12,10 +12,11 @@ export default function UserAvatar({
 }) {
   const random = Math.floor(Math.random() * 100) + 250;
   return (
-    <Avatar className={className}>
+    <Avatar className={className} aria-label={user.displayName + " profile"}>
       <AvatarImage
         src={user.avatarUrl ?? "https://i.pravatar.cc/" + random}
         alt={user.displayName + " profile"}
+        aria-label={user.displayName + " profile"}
       />
       <AvatarFallback>{user.displayName}</AvatarFallback>
     </Avatar>

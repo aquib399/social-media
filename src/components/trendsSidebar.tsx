@@ -1,10 +1,10 @@
-import { userDataSelect } from "@/lib/types";
+import { getUserDataSelect } from "@/lib/types";
 import { unstable_cache } from "next/cache";
 import { formatNumber } from "@/lib/utils";
+import FollowButton from "./followButton";
 import { validateRequest } from "@/auth";
 import { Loader2 } from "lucide-react";
 import UserAvatar from "./userAvatar";
-import { Button } from "./ui/button";
 import prisma from "@/lib/prisma";
 import { Suspense } from "react";
 import Link from "next/link";
@@ -29,13 +29,18 @@ async function WhoToFollow() {
       NOT: {
         id: user.id,
       },
+      followers: {
+        none: {
+          followerId: user.id,
+        },
+      },
     },
-    select: userDataSelect,
+    select: getUserDataSelect(user.id),
     take: 5,
     cacheStrategy: { ttl: 300 },
   });
   return (
-    <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm">
+    <div className="space-y-5 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
       <div className="text-lg font-medium">Who to Follow</div>
       {usersToFollow.map((user, index) => {
         return (
@@ -54,9 +59,15 @@ async function WhoToFollow() {
                 </p>
               </div>
             </Link>
-            <Button size="sm" className="text-sm">
-              Follow
-            </Button>
+            <FollowButton
+              userId={user.id}
+              intialState={{
+                followers: user._count.followers,
+                isFollwedByUser: user.followers.some(
+                  ({ followerId }) => followerId === user.id,
+                ),
+              }}
+            />
           </div>
         );
       })}
@@ -85,7 +96,7 @@ async function TrendingTopics() {
   const trending_topics = await getTrendingTopics();
 
   return (
-    <div className="space-y-5 rounded-2xl bg-card p-5 shadow-sm">
+    <div className="space-y-5 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
       <div className="text-lg font-medium">Trending Topics</div>
       {trending_topics.map((topic, index) => {
         const title = topic.hashTag.replace("#", "");

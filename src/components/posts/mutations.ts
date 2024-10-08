@@ -1,8 +1,8 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { PostsPage } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
+import { PostsPage } from "@/lib/types";
 import { deletePost } from "./actions";
 import {
   InfiniteData,

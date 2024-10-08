@@ -2,18 +2,18 @@
 
 import { useSession } from "@/app/(main)/sessionProvider";
 import { formatRelativeDate } from "@/lib/utils";
+import PostMoreButton from "./postMoreButton";
 import { PostData } from "@/lib/types";
 import UserAvatar from "../userAvatar";
 import Link from "next/link";
-import PostMoreButton from "./postMoreButton";
 
 export default function Post({ post }: { post: PostData }) {
   const { user } = useSession();
   return (
-    <article className="group/post space-y-3 rounded-2xl bg-card p-5 shadow-sm">
+    <article className="group/post space-y-3 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
       <div className="flex justify-between gap-3">
         <div className="flex flex-wrap gap-3">
-          <Link href={"/users/" + post.user.username}>
+          <Link href={"#users/" + post.user.username}>
             <UserAvatar user={post.user} />
           </Link>
           <div>

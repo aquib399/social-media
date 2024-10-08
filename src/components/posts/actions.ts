@@ -1,6 +1,6 @@
 "use server";
 
-import { postDataInclude } from "@/lib/types";
+import { getPostDataInclude } from "@/lib/types";
 import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 
@@ -10,7 +10,7 @@ export async function deletePost(id: string) {
 
   const post = await prisma.post.findUnique({
     where: { id },
-    include: postDataInclude,
+    include: getPostDataInclude(user.id),
   });
   if (!post) throw new Error("Post not found");
 

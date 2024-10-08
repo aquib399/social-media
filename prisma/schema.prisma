@@ -4,9 +4,10 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL_ACCELERATED")
-  directUrl = env("DATABASE_URL")
+  provider  = "postgresql"
+  // url       = env("DATABASE_URL")
+  url       = env("DIRECT_DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model User {
@@ -20,6 +21,8 @@ model User {
   bio          String?
   sessions     Session[]
   posts        Post[]
+  following    Follow[]  @relation("Following")
+  followers    Follow[]  @relation("Followers")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -36,6 +39,16 @@ model Session {
   updatedAt DateTime @updatedAt
 
   @@map("sessions")
+}
+
+model Follow {
+  followerId  String
+  follower    User   @relation("Following", fields: [followerId], references: [id], onDelete: Cascade)
+  followingId String
+  following   User   @relation("Followers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
+  @@map("follows")
 }
 
 model Post {

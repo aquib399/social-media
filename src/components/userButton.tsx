@@ -8,15 +8,15 @@ import UserAvatar from "./userAvatar";
 import Link from "next/link";
 import {
   DropdownMenu,
+  DropdownMenuSub,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuPortal,
   DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from "./ui/dropdown-menu";
 
 export function UserButton({ className }: { className?: string }) {

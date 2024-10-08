@@ -1,5 +1,6 @@
 import { useDeletePostMutation } from "./mutations";
 import { LoadingButton } from "../loadingButton";
+import { Button } from "../ui/button";
 import { Post } from "@prisma/client";
 import {
   Dialog,
@@ -9,7 +10,6 @@ import {
   DialogContent,
   DialogDescription,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
 
 interface DeletePostDialogProps {
   post: Post;

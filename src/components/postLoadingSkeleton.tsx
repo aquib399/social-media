@@ -14,7 +14,7 @@ export default function PostLoadingSkeleton() {
 
 function PostLoadingSkeltion() {
   return (
-    <div className="w-full animate-pulse space-y-3 rounded-2xl bg-card p-5 shadow-sm">
+    <div className="w-full animate-pulse space-y-3 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
       <div className="flex flex-wrap gap-3">
         <Skeleton className="size-12 rounded-full" />
         <div className="space-y-1.5">
