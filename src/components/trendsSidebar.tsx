@@ -46,7 +46,7 @@ async function WhoToFollow() {
         return (
           <div key={index} className="flex items-center justify-between gap-3">
             <Link
-              href={"/user/" + user.username}
+              href={"/users/" + user.username}
               className="flex items-start gap-3"
             >
               <UserAvatar user={user} className="flex-none" />
