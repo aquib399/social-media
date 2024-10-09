@@ -2,9 +2,10 @@
 
 import { useSession } from "@/app/(main)/sessionProvider";
 import { formatRelativeDate } from "@/lib/utils";
+import UserAvatar from "@/components/userAvatar";
 import PostMoreButton from "./postMoreButton";
+import Linkify from "@/components/linkify";
 import { PostData } from "@/lib/types";
-import UserAvatar from "../userAvatar";
 import Link from "next/link";
 
 export default function Post({ post }: { post: PostData }) {
@@ -38,7 +39,9 @@ export default function Post({ post }: { post: PostData }) {
           />
         )}
       </div>
-      <div className="whitespace-pre-wrap break-words">{post.content}</div>
+      <Linkify>
+        <div className="whitespace-pre-wrap break-words">{post.content}</div>
+      </Linkify>
     </article>
   );
 }
