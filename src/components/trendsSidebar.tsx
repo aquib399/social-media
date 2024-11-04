@@ -8,6 +8,7 @@ import UserAvatar from "./userAvatar";
 import prisma from "@/lib/prisma";
 import { Suspense } from "react";
 import Link from "next/link";
+import UserToolTip from "./userTooltip";
 
 export async function TrendsSidebar() {
   return (
@@ -45,20 +46,23 @@ async function WhoToFollow() {
       {usersToFollow.map((user, index) => {
         return (
           <div key={index} className="flex items-center justify-between gap-3">
-            <Link
-              href={"/users/" + user.username}
-              className="flex items-start gap-3"
-            >
-              <UserAvatar user={user} className="flex-none" />
-              <div>
-                <p className="line-clamp-1 break-all font-semibold hover:underline">
-                  {user.displayName}
-                </p>
-                <p className="line-clamp-1 break-all text-muted-foreground">
-                  @{user.username}
-                </p>
-              </div>
-            </Link>
+            <UserToolTip user={user}>
+              <Link
+                href={"/users/" + user.username}
+                className="flex items-start gap-3"
+              >
+                <UserAvatar user={user} className="flex-none" />
+                <div>
+                  <p className="line-clamp-1 break-all font-semibold hover:underline">
+                    {user.displayName}
+                  </p>
+                  <p className="line-clamp-1 break-all text-muted-foreground">
+                    @{user.username}
+                  </p>
+                </div>
+              </Link>
+            </UserToolTip>
+
             <FollowButton
               userId={user.id}
               intialState={{

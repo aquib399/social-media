@@ -5,6 +5,7 @@ import { formatRelativeDate } from "@/lib/utils";
 import UserAvatar from "@/components/userAvatar";
 import PostMoreButton from "./postMoreButton";
 import Linkify from "@/components/linkify";
+import UserToolTip from "../userTooltip";
 import { PostData } from "@/lib/types";
 import Link from "next/link";
 
@@ -14,16 +15,20 @@ export default function Post({ post }: { post: PostData }) {
     <article className="group/post space-y-3 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
       <div className="flex justify-between gap-3">
         <div className="flex flex-wrap gap-3">
-          <Link href={"#users/" + post.user.username}>
-            <UserAvatar user={post.user} />
-          </Link>
-          <div>
-            <Link
-              href={"/users/" + post.user.username}
-              className="block font-medium hover:underline"
-            >
-              {post.user.displayName}
+          <UserToolTip user={post.user}>
+            <Link href={"#users/" + post.user.username}>
+              <UserAvatar user={post.user} />
             </Link>
+          </UserToolTip>
+          <div>
+            <UserToolTip user={post.user}>
+              <Link
+                href={"/users/" + post.user.username}
+                className="block font-medium hover:underline"
+              >
+                {post.user.displayName}
+              </Link>
+            </UserToolTip>
             <Link
               href={"/posts/" + post.id}
               className="block text-sm text-muted-foreground hover:underline"

@@ -2,11 +2,11 @@
 
 import { QueryKey, useMutation, useQueryClient } from "@tanstack/react-query";
 import useFollwerInfo from "@/hooks/userFollowerInfo";
+import { Button, ButtonProps } from "./ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { FollowerInfo } from "@/lib/types";
-import { Button } from "./ui/button";
 import kyInstance from "@/lib/ky";
-interface FollowButtonProps {
+interface FollowButtonProps extends ButtonProps {
   userId: string;
   intialState: FollowerInfo;
 }
@@ -14,6 +14,7 @@ interface FollowButtonProps {
 export default function FollowButton({
   userId,
   intialState,
+  ...props
 }: FollowButtonProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -53,6 +54,7 @@ export default function FollowButton({
     <Button
       variant={data.isFollwedByUser ? "secondary" : "default"}
       onClick={() => mutate()}
+      {...props}
     >
       {data.isFollwedByUser ? "Unfollow" : "Follow"}
     </Button>
