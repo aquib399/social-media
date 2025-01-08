@@ -33,13 +33,13 @@ export function UserButton({ className }: { className?: string }) {
         <DropdownMenuLabel>Signed In as @{user.username}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <Link href={"/users/" + user.username}>
-          <DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
             <UserIcon className="mr-2 size-4" />
             Profile
           </DropdownMenuItem>
         </Link>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger className="cursor-pointer">
             {
               {
                 system: <Monitor className="mr-2 size-4" />,
@@ -51,17 +51,26 @@ export function UserButton({ className }: { className?: string }) {
           </DropdownMenuSubTrigger>
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
-              <DropdownMenuItem onClick={() => setTheme("system")}>
+              <DropdownMenuItem
+                onClick={() => setTheme("system")}
+                className="cursor-pointer"
+              >
                 <Monitor className="mr-2 size-4" />
                 System default
                 {theme === "system" && <Dot />}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme("light")}>
+              <DropdownMenuItem
+                onClick={() => setTheme("light")}
+                className="cursor-pointer"
+              >
                 <Sun className="mr-2 size-4" />
                 Light
                 {theme === "light" && <Dot />}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme("dark")}>
+              <DropdownMenuItem
+                onClick={() => setTheme("dark")}
+                className="cursor-pointer"
+              >
                 <Moon className="mr-2 size-4" />
                 Dark
                 {theme === "dark" && <Dot />}
@@ -74,6 +83,7 @@ export function UserButton({ className }: { className?: string }) {
           onClick={() => {
             signOut();
           }}
+          className="cursor-pointer"
         >
           <LogOut className="mr-2 size-4" />
           Sign Out

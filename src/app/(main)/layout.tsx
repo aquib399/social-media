@@ -11,7 +11,6 @@ export default async function MainLayout({
 }) {
   const session = await validateRequest();
   if (!session.user) redirect("/signin");
-
   return (
     <SessionProvider value={session}>
       <main className="flex min-h-screen flex-col">

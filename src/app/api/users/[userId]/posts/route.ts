@@ -20,7 +20,7 @@ export async function GET(
       orderBy: { createdAt: "desc" },
       take: pageSize + 1,
       cursor: cursor ? { id: cursor } : undefined,
-      cacheStrategy: { swr: 60, ttl: 300 },
+      // cacheStrategy: { swr: 60, ttl: 300 },
     });
     const nextCursor = posts.length > pageSize ? posts[pageSize].id : null;
 

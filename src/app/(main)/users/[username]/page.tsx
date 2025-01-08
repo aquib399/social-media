@@ -1,19 +1,18 @@
-import { TrendsSidebar } from "@/components/trendsSidebar";
 import { FollowerInfo, getUserDataSelect, UserData } from "@/lib/types";
+import { TrendsSidebar } from "@/components/trendsSidebar";
+import FollowerCount from "@/components/followerCount";
+import FollowButton from "@/components/followButton";
+import EditProfileButton from "./editProfileButton";
+import UserAvatar from "@/components/userAvatar";
+import Linkify from "@/components/linkify";
 import { notFound } from "next/navigation";
+import { formatNumber } from "@/lib/utils";
+import UserPostFeed from "./userPostFeed";
 import { validateRequest } from "@/auth";
+import { formatDate } from "date-fns";
 import prisma from "@/lib/prisma";
 import { Metadata } from "next";
 import { cache } from "react";
-import UserAvatar from "@/components/userAvatar";
-import { formatDate } from "date-fns";
-import { formatNumber } from "@/lib/utils";
-import FollowerCount from "@/components/followerCount";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-import FollowButton from "@/components/followButton";
-import UserPostFeed from "./userPostFeed";
-import Linkify from "@/components/linkify";
 
 interface UserPageProps {
   params: { username: string };
@@ -89,33 +88,33 @@ async function UserProfile({ user, loggedUserId }: UserProfileProps) {
     <div className="h-fit w-full space-y-5 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
       <UserAvatar
         user={user}
+        size={720}
         className="mx-auto h-full max-h-60 w-full max-w-60"
       />
-      <div className="flex flex-wrap gap-3 sm:flex-nowrap">
+      <div className="flex flex-wrap gap-3 sm:flex-nowrap justify-between">
         <div className="mx-autp space-y-3">
           <div>
             <h1 className="text-2xl font-bold">{user.displayName}</h1>
             <h2 className="text-muted-foreground">@{user.username}</h2>
           </div>
-          <div>Member since {formatDate(user.createdAt, "dd-MMM-yyyy")}</div>
+          <div>Member since {formatDate(user.createdAt, "dd MMM yyyy")}</div>
           <div className="flex items-center gap-3">
             <span>
               Posts:{" "}
               <span className="font-semibold">
-                {formatNumber(user._count.followers)}
+                {formatNumber(user._count.posts)}
               </span>
             </span>
             <FollowerCount userId={user.id} initialState={followerInfo} />
           </div>
-          {user.id === loggedUserId ? (
-            <Button asChild>
-              <Link href={"/profile/edit"}>Edit Profile</Link>
-            </Button>
-          ) : (
-            <FollowButton intialState={followerInfo} userId={user.id} />
-          )}
         </div>
+        {user.id === loggedUserId ? (
+          <EditProfileButton user={user} />
+        ) : (
+          <FollowButton intialState={followerInfo} userId={user.id} />
+        )}
       </div>
+
       {user.bio ? (
         <>
           <hr />

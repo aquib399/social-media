@@ -21,8 +21,8 @@ interface userTooltipsProps extends PropsWithChildren {
 export default function UserToolTip({ user, children }: userTooltipsProps) {
   const { user: loggedUser } = useSession();
   const followerState: FollowerInfo = {
-    followers: user._count.followers,
-    isFollwedByUser: !!user.followers.some(
+    followers: user?._count?.followers,
+    isFollwedByUser: !!user?.followers?.some(
       ({ followerId }) => followerId === loggedUser.id,
     ),
   };

@@ -10,8 +10,11 @@ export default function Navbar() {
           <Link href={"/"} className="mr-auto text-2xl font-bold">
             Drift
           </Link>
+          <Link href={"/admin"} className="mr-auto text-2xl font-bold">
+            Admin
+          </Link>
           <SearchButton className="hidden sm:block" />
-          <UserButton />
+          <UserButton className="cursor-pointer" />
         </div>
         <SearchButton className="w-full sm:hidden" />
       </div>

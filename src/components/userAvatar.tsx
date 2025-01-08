@@ -1,24 +1,29 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export default function UserAvatar({
   user,
   className,
+  size,
 }: {
   user: {
     displayName: string | null;
     avatarUrl: string | null;
   };
   className?: string;
+  size?: number;
 }) {
-  const random = Math.floor(Math.random() * 100) + 250;
   return (
-    <Avatar className={className} aria-label={user.displayName + " profile"}>
-      <AvatarImage
-        src={user.avatarUrl ?? "https://i.pravatar.cc/" + random}
-        alt={user.displayName + " profile"}
-        aria-label={user.displayName + " profile"}
-      />
-      <AvatarFallback>{user.displayName}</AvatarFallback>
-    </Avatar>
+    <Image
+      src={user.avatarUrl ?? "https://i.pravatar.cc/"}
+      alt={user.displayName + " profile"}
+      aria-label={user.displayName + " profile"}
+      width={size ?? 120}
+      height={size || 120}
+      className={cn(
+        "rounded-full aspect-square size-10 flex-none bg-secondary",
+        className,
+      )}
+    />
   );
 }

@@ -17,6 +17,7 @@ export const lucia = new Lucia(adapter, {
     return {
       id: databaseUserAttributes.id,
       username: databaseUserAttributes.username,
+      email: databaseUserAttributes.email,
       displayName: databaseUserAttributes.displayName,
       avatarUrl: databaseUserAttributes.avatarUrl,
       googleId: databaseUserAttributes.googleId,
@@ -37,6 +38,7 @@ interface DatabaseUserAttributes {
   displayName: string;
   avatarUrl: string | null;
   googleId: string | null;
+  email: string | null;
 }
 
 export const validateRequest = cache(
@@ -54,25 +56,42 @@ export const validateRequest = cache(
 
     const result = await lucia.validateSession(sessionId);
 
-    try {
-      if (result.session && result.session.fresh) {
-        const sessionCookie = lucia.createSessionCookie(result.session.id);
-        cookies().set(
-          sessionCookie.name,
-          sessionCookie.value,
-          sessionCookie.attributes,
-        );
-      }
-      if (!result.session) {
-        const sessionCookie = lucia.createBlankSessionCookie();
-        cookies().set(
-          sessionCookie.name,
-          sessionCookie.value,
-          sessionCookie.attributes,
-        );
-      }
-    } catch {}
+    if (result.session && result.session.fresh) {
+      const sessionCookie = lucia.createSessionCookie(result.session.id);
+      cookies().set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes,
+      );
+    }
+    if (!result.session) {
+      const sessionCookie = lucia.createBlankSessionCookie();
+      cookies().set(
+        sessionCookie.name,
+        sessionCookie.value,
+        sessionCookie.attributes,
+      );
+    }
 
     return result;
   },
 );
+
+export const validateRequestAdmin = cache(async () => {
+  const result = await validateRequest();
+  const admin = await prisma.admin.findUnique({
+    where: {
+      email: result.user?.email!,
+    },
+  });
+  if (!admin)
+    return {
+      result: null,
+      admin: null,
+    };
+
+  return {
+    result,
+    admin,
+  };
+});

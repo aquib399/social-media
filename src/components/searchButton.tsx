@@ -10,7 +10,6 @@ export default function SearchButton({ className }: { className?: string }) {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const query = e.currentTarget.query.value;
-    console.log({ query });
     router.push(`/search?q=${encodeURIComponent(query)}`);
   }
   return (

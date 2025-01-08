@@ -31,7 +31,15 @@ export async function SignUp(cred: SignUpValues): Promise<{ error: string }> {
         ],
       },
     });
-    if (exists) return { error: "Username or email already exists" };
+
+    if (exists) {
+      return {
+        error:
+          exists.email === email
+            ? "Email already exists"
+            : "Username already exists",
+      };
+    }
 
     const hashPass = await hash(password, {
       memoryCost: 19456,
@@ -61,8 +69,6 @@ export async function SignUp(cred: SignUpValues): Promise<{ error: string }> {
   } catch (error) {
     if (isRedirectError(error)) throw error;
     console.error("Signup error", error);
-    return {
-      error: "Something went wrong",
-    };
+    return { error: "Something went wrong" };
   }
 }

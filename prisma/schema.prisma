@@ -1,6 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  previewFeatures = ["fullTextSearchPostgres"]
 }
 
 datasource db {
@@ -61,4 +61,30 @@ model Post {
   updatedAt DateTime @updatedAt
 
   @@map("posts")
+}
+
+model Admin {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  authority Authority
+  setting   Setting[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("admins")
+}
+
+model Setting {
+  name      String @unique
+  value     Json
+  createdBy Admin  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  adminId   String
+}
+
+enum Authority {
+  all // can delete admins, users, posts and sessions
+  users_posts_sessions // can delete users, posts and sessions
+  posts_sessions // can delete posts and sessions
+  sessions // can delete sessions
 }

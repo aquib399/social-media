@@ -29,6 +29,7 @@ export function useSubmitPostMutation() {
       } satisfies QueryFilters;
       await queryClient.cancelQueries(queryFilter);
       queryClient.setQueriesData<InfiniteData<PostsPage, string | null>>(
+        //@ts-ignore
         queryFilter,
         (oldData) => {
           const firstPage = oldData?.pages[0];

@@ -3,12 +3,12 @@ import { unstable_cache } from "next/cache";
 import { formatNumber } from "@/lib/utils";
 import FollowButton from "./followButton";
 import { validateRequest } from "@/auth";
+import UserToolTip from "./userTooltip";
 import { Loader2 } from "lucide-react";
 import UserAvatar from "./userAvatar";
 import prisma from "@/lib/prisma";
 import { Suspense } from "react";
 import Link from "next/link";
-import UserToolTip from "./userTooltip";
 
 export async function TrendsSidebar() {
   return (
@@ -38,7 +38,7 @@ async function WhoToFollow() {
     },
     select: getUserDataSelect(user.id),
     take: 5,
-    cacheStrategy: { swr: 60, ttl: 300 },
+    // cacheStrategy: { swr: 60, ttl: 300 },
   });
   return (
     <div className="space-y-5 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
