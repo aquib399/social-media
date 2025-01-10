@@ -2,7 +2,6 @@ import prisma from "@/lib/prisma";
 
 export default async function Sessions() {
   const sessions = await prisma.session.findMany({ select: { id: true } });
-  console.log({ sessions });
   return (
     <section className="w-full ">
       <div className="space-y-3">
