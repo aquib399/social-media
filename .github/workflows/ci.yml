@@ -1,0 +1,33 @@
+name: CI Checks
+
+on:
+  push:
+    branches:
+      - main
+      - develop # Add other branches as needed
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18 # Update this to your Node.js version
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check formatting with Prettier
+        run: npx prettier --check .
+
+      - name: Run Next.js build
+        run: npm run build
