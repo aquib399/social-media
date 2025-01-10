@@ -13,32 +13,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18.18.0 # Updated Node.js version
+          node-version: "18.18.0"
 
-      # Step 3: Install dependencies
       - name: Install dependencies
         run: npm install --legacy-peer-deps
 
-      # Step 4: Format code using Prettier
-      - name: Format code
+      - name: Set up environment variables
+        env:
+          DIRECT_DATABASE_URL: ${{ secrets.DIRECT_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          UPLOADTHING_TOKEN: ${{ secrets.UPLOADTHING_TOKEN }}
+          UPLOADTHING_SECRET_KEY: ${{ secrets.UPLOADTHING_SECRET_KEY }}
+          UPLOADTHING_APP_ID: ${{ secrets.UPLOADTHING_APP_ID }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+        run: echo "Environment variables are set."
+
+      - name: Format code with Prettier
         run: npm run format
 
-      # Step 5: Lint code using ESLint
-      - name: Lint code
+      - name: Lint code with ESLint
         run: npm run lint
 
-      # Step 6: Check TypeScript types
-      - name: TypeScript Type Check
+      - name: Check TypeScript types
         run: npx tsc --noEmit
 
-      # Step 7: Build the application
-      - name: Build Next.js
+      - name: Build Next.js app
         run: npm run build
