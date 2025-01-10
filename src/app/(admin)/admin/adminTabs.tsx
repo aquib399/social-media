@@ -1,9 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GlobeLock, Home, Rss, ShieldCheck, UsersIcon } from "lucide-react";
+import { GlobeLock, Rss, ShieldCheck, UsersIcon } from "lucide-react";
+import Sessions from "./sessions";
 import Admins from "./admins";
 import Users from "./users";
 import Posts from "./posts";
-import Sessions from "./sessions";
 
 export default function AdminTabs() {
   return (

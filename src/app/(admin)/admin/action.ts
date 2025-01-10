@@ -87,3 +87,18 @@ export async function changeAuthority(adminId: string, authority: Authority) {
   });
   return updatedAdmin;
 }
+
+export async function getData(type: "users" | "posts" | "sessions" | "admins") {
+  switch (type) {
+    case "users":
+      return await prisma.user.findMany({ select: { email: true } });
+    case "posts":
+      return await prisma.post.findMany({ select: { content: true } });
+    case "sessions":
+      return await prisma.session.findMany({ select: { id: true } });
+    case "admins":
+      return await prisma.admin.findMany({ select: { email: true } });
+    default:
+      return new Error("Invalid type");
+  }
+}

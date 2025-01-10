@@ -1,14 +1,14 @@
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { PrismaClient } from "@prisma/client";
 
-const prismaClientSingleton = () =>
-  new PrismaClient().$extends(withAccelerate());
+// const client = new PrismaClient()
+const client = new PrismaClient().$extends(withAccelerate());
 
 declare global {
-  var prismaGlobal: ReturnType<typeof prismaClientSingleton> | undefined;
+  var prismaGlobal: typeof client | undefined;
 }
 
-const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
+const prisma = globalThis.prismaGlobal ?? client;
 
 export default prisma;
 

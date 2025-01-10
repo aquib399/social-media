@@ -3,31 +3,42 @@ name: CI Checks
 on:
   push:
     branches:
-      - main
-      - develop # Add other branches as needed
+      - master
   pull_request:
     branches:
-      - main
-      - develop
+      - master
 
 jobs:
   checks:
     runs-on: ubuntu-latest
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step 2: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18 # Update this to your Node.js version
+          node-version: 18.17.0 # Required Node.js version
 
+      # Step 3: Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm install --legacy-peer-deps
 
-      - name: Check formatting with Prettier
-        run: npx prettier --check .
+      # Step 4: Format code using Prettier
+      - name: Format code
+        run: npm run format
 
-      - name: Run Next.js build
+      # Step 5: Lint code using ESLint
+      - name: Lint code
+        run: npm run lint
+
+      # Step 6: Check TypeScript types
+      - name: TypeScript Type Check
+        run: npx tsc --noEmit
+
+      # Step 7: Build the application
+      - name: Build Next.js
         run: npm run build

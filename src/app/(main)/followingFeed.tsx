@@ -15,10 +15,16 @@ export default function FollowingFeed() {
       queryFn: ({ pageParam }) =>
         kyInstance
           .get(
-            "/api/posts/following",
+            "/api/posts",
             pageParam
-              ? { searchParams: { cursor: pageParam, pageSize: 10 } }
-              : { searchParams: { pageSize: 10 } },
+              ? {
+                  searchParams: {
+                    cursor: pageParam,
+                    pageSize: 10,
+                    type: "following",
+                  },
+                }
+              : { searchParams: { pageSize: 10, type: "following" } },
           )
           .json<PostsPage>(),
       initialPageParam: null as string | null,

@@ -15,10 +15,16 @@ export default function ForYouFeed() {
       queryFn: ({ pageParam }) =>
         kyInstance
           .get(
-            "/api/posts/for-you",
+            "/api/posts",
             pageParam
-              ? { searchParams: { cursor: pageParam, pageSize: 10 } }
-              : { searchParams: { pageSize: 10 } },
+              ? {
+                  searchParams: {
+                    cursor: pageParam,
+                    pageSize: 10,
+                    type: "for-you",
+                  },
+                }
+              : { searchParams: { pageSize: 10, type: "for-you" } },
           )
           .json<PostsPage>(),
       initialPageParam: null as string | null,

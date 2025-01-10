@@ -1,6 +1,6 @@
+import { getPostDataInclude, PostsPage } from "@/lib/types";
 import { NextRequest } from "next/server";
 import { validateRequest } from "@/auth";
-import { getPostDataInclude, PostsPage } from "@/lib/types";
 import prisma from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
@@ -10,9 +10,13 @@ export async function GET(req: NextRequest) {
 
     const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
     const pageSize = Number(req.nextUrl.searchParams.get("pageSize")) || 10;
+    const type = req.nextUrl.searchParams.get("type");
 
-    const posts = await prisma.post.findMany({
-      where: {
+    // FOLLOWING
+    let whereClause = {};
+
+    if (type == "following") {
+      whereClause = {
         user: {
           followers: {
             some: {
@@ -20,14 +24,18 @@ export async function GET(req: NextRequest) {
             },
           },
         },
-      },
-      include: getPostDataInclude(user.id),
+      };
+    }
 
+    const posts = await prisma.post.findMany({
+      where: whereClause,
+      include: getPostDataInclude(user.id),
       orderBy: { createdAt: "desc" },
       take: pageSize + 1,
       cursor: cursor ? { id: cursor } : undefined,
       // cacheStrategy: { swr: 60, ttl: 300 },
     });
+
     const nextCursor = posts.length > pageSize ? posts[pageSize].id : null;
 
     const data: PostsPage = {
@@ -37,7 +45,7 @@ export async function GET(req: NextRequest) {
 
     return Response.json(data);
   } catch (error) {
-    console.error("For you posts error", { error });
+    console.error("Get posts error", { error });
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }

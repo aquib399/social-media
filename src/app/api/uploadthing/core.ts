@@ -20,8 +20,7 @@ export const fileRouter = {
       if (!user) throw new UploadThingError("Unauthorized");
       return { user };
     })
-    .onUploadComplete(async ({ metadata, file, event }) => {
-
+    .onUploadComplete(async ({ metadata, file }) => {
       await prisma.user.update({
         where: { id: metadata.user.id },
         data: {
