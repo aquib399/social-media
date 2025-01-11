@@ -15,7 +15,7 @@ export default function UserAvatar({
 }) {
   return (
     <Image
-      src={user.avatarUrl ?? "https://i.pravatar.cc/"}
+      src={user.avatarUrl ?? "/profile-placeholder.png"}
       alt={user.displayName + " profile"}
       aria-label={user.displayName + " profile"}
       width={size ?? 120}

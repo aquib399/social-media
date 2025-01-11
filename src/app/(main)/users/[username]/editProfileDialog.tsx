@@ -1,13 +1,18 @@
 "use client";
 import { updateProfileSchema, UpdateProfileValues } from "@/lib/validation";
+import { CropImageDialog } from "@/components/cropImageDialog";
 import { LoadingButton } from "@/components/loadingButton";
 import { useUpdateProfileMutation } from "./mutations";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image, { StaticImageData } from "next/image";
 import { Textarea } from "@/components/ui/textarea";
+import Resizer from "react-image-file-resizer";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
+import { useRef, useState } from "react";
 import { UserData } from "@/lib/types";
+import "cropperjs/dist/cropper.css";
 import {
   Dialog,
   DialogTitle,
@@ -24,6 +29,7 @@ import {
   FormMessage,
   FormControl,
 } from "@/components/ui/form";
+import { Camera } from "lucide-react";
 
 interface EditProfileDialogProps {
   user: UserData;
@@ -45,12 +51,18 @@ export function EditProfileDialog({
     },
   });
   const mutation = useUpdateProfileMutation();
+  const [croppedAvatar, setCroppedAvatar] = useState<Blob | null>(null);
+
   async function onSubmit(values: UpdateProfileValues) {
+    const newAvatar = croppedAvatar
+      ? new File([croppedAvatar], `avatar_${user.id}.webp`)
+      : undefined;
     mutation.mutate(
-      { values },
+      { values, avatar: newAvatar },
       {
         onSuccess: () => {
           onOpenChange(false);
+          setCroppedAvatar(null);
           toast({
             title: "Profile updated from components.tsx",
             description: "Your profile has been updated successfully.",
@@ -74,6 +86,17 @@ export function EditProfileDialog({
           <DialogTitle>Edit Profile</DialogTitle>
           <DialogDescription>Edit your profile information.</DialogDescription>
         </DialogHeader>
+        <div className="space-y-1.5">
+          <label>Avatar</label>
+          <AvatarImageInput
+            src={
+              croppedAvatar
+                ? URL.createObjectURL(croppedAvatar)
+                : (user.avatarUrl ?? "/profile-placeholder.png")
+            }
+            onImageCropped={setCroppedAvatar}
+          />
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
             <FormField
@@ -117,5 +140,71 @@ export function EditProfileDialog({
         </Form>
       </DialogContent>
     </Dialog>
+  );
+}
+
+interface AvatarImageInputProps {
+  src: string | StaticImageData;
+  onImageCropped: (blob: Blob | null) => void;
+}
+
+export function AvatarImageInput({
+  src,
+  onImageCropped,
+}: AvatarImageInputProps) {
+  const [imageTocrop, setImageTocrop] = useState<File>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function onImageSelected(image: File | undefined) {
+    if (!image) return;
+    Resizer.imageFileResizer(
+      image,
+      1024,
+      1024,
+      "WEBP",
+      100,
+      0,
+      (uri) => setImageTocrop(uri as File),
+      "file",
+    );
+  }
+
+  return (
+    <>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={(e) => onImageSelected(e.target.files?.[0])}
+        ref={fileInputRef}
+        className="hidden sr-only"
+      />
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        className="group relative block border rounded-full overflow-hidden"
+      >
+        <Image
+          src={src}
+          alt="Profile picture"
+          width={150}
+          height={150}
+          className="size-32 flex-none obejct-cover rounded-full"
+        />
+        <span className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-30 group-hover:opacity-100 group-hover:backdrop-blur-[1px] transition-all">
+          <Camera size={32} strokeWidth={1.2} color="white" />
+        </span>
+      </button>
+      {imageTocrop && (
+        <CropImageDialog
+          src={URL.createObjectURL(imageTocrop)}
+          cropAspectRatio={1}
+          onCropped={onImageCropped}
+          onClose={() => {
+            setImageTocrop(undefined);
+            if (fileInputRef.current) fileInputRef.current.value = "";
+          }}
+        />
+      )}
+    </>
   );
 }

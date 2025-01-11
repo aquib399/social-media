@@ -14,10 +14,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
           node-version: "18.18.0"
 
@@ -33,9 +33,6 @@ jobs:
           UPLOADTHING_APP_ID: ${{ secrets.UPLOADTHING_APP_ID }}
           NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
         run: echo "Environment variables are set."
-
-      - name: Format code with Prettier
-        run: npm run format
 
       - name: Lint code with ESLint
         run: npm run lint
