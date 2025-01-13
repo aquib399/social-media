@@ -1,8 +1,8 @@
 {
   "crons": [
     {
-      "path": "/api/delete-unused-files",
-      "schedule": "0 0 * * *"
+      "path": "/api/delete-unused-medias",
+      "schedule": "7 0 * * *"
     }
   ]
 }

@@ -99,7 +99,7 @@ export default function PostEditor() {
             {String(progress == 100 ? 99 : progress || 0)}%
           </span>
           <div
-            className="h-1 bg-secondary rounded-full transition-all duration-500"
+            className="h-1 bg-secondary rounded-full transition-all duration-1000"
             style={{ width: `${progress}%` }}
           />
         </div>
