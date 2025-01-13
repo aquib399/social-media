@@ -25,6 +25,7 @@ export type SignInValues = z.infer<typeof signInSchema>;
 
 export const createPostSchema = z.object({
   content: z.string().nonempty().trim(),
+  mediaIds: z.array(z.string()).max(5),
 });
 export type CreatePostValues = z.infer<typeof createPostSchema>;
 

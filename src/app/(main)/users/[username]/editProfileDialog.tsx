@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { useRef, useState } from "react";
 import { UserData } from "@/lib/types";
+import { Camera } from "lucide-react";
 import "cropperjs/dist/cropper.css";
 import {
   Dialog,
@@ -23,13 +24,12 @@ import {
 } from "@/components/ui/dialog";
 import {
   Form,
-  FormField,
   FormItem,
+  FormField,
   FormLabel,
   FormMessage,
   FormControl,
 } from "@/components/ui/form";
-import { Camera } from "lucide-react";
 
 interface EditProfileDialogProps {
   user: UserData;
@@ -64,7 +64,7 @@ export function EditProfileDialog({
           onOpenChange(false);
           setCroppedAvatar(null);
           toast({
-            title: "Profile updated from components.tsx",
+            title: "Profile updated",
             description: "Your profile has been updated successfully.",
           });
         },

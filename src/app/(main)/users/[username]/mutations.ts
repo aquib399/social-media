@@ -71,10 +71,6 @@ export function useUpdateProfileMutation() {
         },
       );
       router.refresh();
-      toast({
-        title: "Profile updated from mutations.ts",
-        description: "Your profile has been updated successfully",
-      });
     },
     onError: (error) => {
       toast({
