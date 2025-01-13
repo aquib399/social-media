@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/delete-unused-medias",
-      "schedule": "7 0 * * *"
+      "schedule": "45 18 * * *"
     }
   ]
 }
