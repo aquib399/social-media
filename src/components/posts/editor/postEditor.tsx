@@ -1,16 +1,17 @@
 "use client";
 import { LoadingButton } from "@/components/loadingButton";
 import { useSession } from "@/app/(main)/sessionProvider";
-import { ImageIcon, Loader2, XIcon } from "lucide-react";
 import useMediaUpload, { Media } from "./useMediaUpload";
 import { EditorContent, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useSubmitPostMutation } from "./mutations";
 import UserAvatar from "@/components/userAvatar";
+import { useDropzone } from "@uploadthing/react";
 import { Button } from "@/components/ui/button";
+import { ImageIcon, XIcon } from "lucide-react";
+import { ClipboardEvent, useRef } from "react";
 import StarterKit from "@tiptap/starter-kit";
 import { cn } from "@/lib/utils";
-import { useRef } from "react";
 import Image from "next/image";
 import "./styles.css";
 
@@ -27,6 +28,10 @@ export default function PostEditor() {
     removeMedia,
     handleStartUpload,
   } = useMediaUpload();
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop: handleStartUpload,
+  });
+  const { onClick, ...rootProps } = getRootProps();
 
   const editor = useEditor({
     extensions: [
@@ -60,14 +65,29 @@ export default function PostEditor() {
       },
     );
   }
+  function onPaste(e: ClipboardEvent<HTMLInputElement>) {
+    const files = Array.from(e.clipboardData?.items)
+      .filter((f) => f.kind === "file")
+      .map((f) => f.getAsFile()) as File[];
+    if (!files.length) return;
+    handleStartUpload(files);
+  }
+
   return (
     <div className="flex flex-col gap-x-5 gap-y-3 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
       <div className="flex gap-5">
         <UserAvatar user={user} className="hidden sm:inline" />
-        <EditorContent
-          editor={editor}
-          className="max-h-80 w-full overflow-y-auto rounded-xl bg-background px-5 py-3 sm:rounded-2xl"
-        />
+        <div {...rootProps} className="w-full">
+          <EditorContent
+            editor={editor}
+            className={cn(
+              "max-h-[20rem] w-full overflow-y-auto rounded-2xl bg-background px-5 py-3",
+              isDragActive && "outline-dashed",
+            )}
+            onPaste={onPaste}
+          />
+          <input {...getInputProps()} />
+        </div>
       </div>
       {!!medias.length && (
         <MediaPreviews medias={medias} removeMedia={removeMedia} />
@@ -202,7 +222,7 @@ function MediaPreview({ media, onRemove }: mediaPreviewProps) {
       {!isUploading && (
         <button
           onClick={onRemove}
-          className="absolute top-2 right-2 rounded-full bg-background/60 p-1 transition-colors hover:bg-background"
+          className="absolute top-2 right-2 rounded-full bg-background p-1 hover:scale-110 transition-all"
         >
           <XIcon size={16} />
         </button>
