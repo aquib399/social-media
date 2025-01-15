@@ -74,10 +74,11 @@ model Admin {
 }
 
 model Setting {
-  name      String @unique
+  name      String  @unique
+  type      String
   value     Json
-  createdBy Admin  @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  adminId   String
+  createdBy Admin?  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  adminId   String?
 }
 
 model Media {

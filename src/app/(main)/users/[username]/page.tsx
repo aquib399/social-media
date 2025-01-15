@@ -37,10 +37,30 @@ export async function generateMetadata({
 }: UserPageProps): Promise<Metadata> {
   const { user: loggedUser } = await validateRequest();
   if (!loggedUser) return {};
+
   const user = await getUser(username, loggedUser.id);
+  if (!user) return notFound();
+
+  const userTitle = `${user.displayName} (@${user.username}) | My Website Name`;
+  const userDescription = `${user.displayName} is a member of our community. Explore their posts, followers, and more.`;
+
   return {
-    title: `${user.displayName} (@${user.username})`,
-    description: "",
+    title: userTitle,
+    description: userDescription,
+    keywords: `${user.displayName}, @${user.username}, user profile, blog posts, followers, community`,
+    openGraph: {
+      title: userTitle,
+      description: userDescription,
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/users/${user.username}`,
+      type: "profile",
+      images: user.avatarUrl!,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: userTitle,
+      description: userDescription,
+      images: user.avatarUrl!,
+    },
   };
 }
 

@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { UTApi } from "uploadthing/server";
+import { formatDate } from "date-fns";
 import prisma from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
@@ -29,7 +30,6 @@ export async function GET(request: NextRequest) {
       url: true,
     },
   });
-  console.log({ media_length: medias.length });
 
   new UTApi().deleteFiles(
     medias.map((media) => media.url.split("/").pop() as string),
@@ -39,6 +39,15 @@ export async function GET(request: NextRequest) {
       id: {
         in: medias.map((media) => media.id),
       },
+    },
+  });
+
+  const deletedMediasIds = medias.map((media) => media.url);
+  await prisma.setting.create({
+    data: {
+      type: "Log",
+      name: `Deleted medias at: ${formatDate(new Date(), "HH:mm:ss - dd MMM yyyy")}`,
+      value: deletedMediasIds,
     },
   });
   return Response.json({ success: true });
