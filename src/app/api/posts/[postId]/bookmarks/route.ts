@@ -1,5 +1,5 @@
 import { validateRequest } from "@/auth";
-import { LikeInfo } from "@/lib/types";
+import { BookmarkInfo } from "@/lib/types";
 import prisma from "@/lib/prisma";
 
 export async function GET(
@@ -7,40 +7,27 @@ export async function GET(
   { params: { postId } }: { params: { postId: string } },
 ) {
   try {
-    console.log("API TRIGGERED--------------------------");
     const { user: loggedUser } = await validateRequest();
     if (!loggedUser)
       return Response.json({ error: "Unauthorized" }, { status: 401 });
-    const post = await prisma.post.findUnique({
-      where: { id: postId },
-      select: {
-        likes: {
-          where: {
-            likedByUserId: loggedUser.id,
-          },
-          select: {
-            likedByUserId: true,
-          },
-        },
-        _count: {
-          select: {
-            likes: true,
-          },
+
+    const bookmark = await prisma.bookmark.findUnique({
+      where: {
+        postId_bookmarkedByUserId: {
+          bookmarkedByUserId: loggedUser.id,
+          postId,
         },
       },
     });
 
-    if (!post)
-      return Response.json({ error: "Post not found" }, { status: 404 });
-
-    const data: LikeInfo = {
-      likes: post._count.likes,
-      isLikedByUser: !!post.likes.length,
+    const data: BookmarkInfo = {
+      isBookmarkedByUser: bookmark?.bookmarkedByUserId === loggedUser.id,
     };
+		console.log({data})
 
     return Response.json(data);
   } catch (error) {
-    console.error("Get follower error", error);
+    console.error("Get Bookmark error", error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -54,22 +41,22 @@ export async function POST(
     if (!loggedUser)
       return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    await prisma.like.upsert({
+    await prisma.bookmark.upsert({
       where: {
-        postId_likedByUserId: {
-          likedByUserId: loggedUser.id,
+        postId_bookmarkedByUserId: {
+          bookmarkedByUserId: loggedUser.id,
           postId,
         },
       },
       create: {
-        likedByUserId: loggedUser.id,
+        bookmarkedByUserId: loggedUser.id,
         postId,
       },
       update: {},
     });
     return new Response();
   } catch (error) {
-    console.error("Follow error", error);
+    console.error("Bookmark error", error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }
@@ -83,15 +70,15 @@ export async function DELETE(
     if (!loggedUser)
       return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    await prisma.like.deleteMany({
+    await prisma.bookmark.deleteMany({
       where: {
-        likedByUserId: loggedUser.id,
+        bookmarkedByUserId: loggedUser.id,
         postId,
       },
     });
     return new Response();
   } catch (error) {
-    console.error("Get follower error", error);
+    console.error("Unbookmark error", error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }

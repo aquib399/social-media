@@ -3,53 +3,43 @@
 import { useSession } from "@/app/(main)/sessionProvider";
 import { cn, formatRelativeDate } from "@/lib/utils";
 import UserAvatar from "@/components/userAvatar";
+import BookMarkButton from "../bookmarkButton";
 import PostMoreButton from "./postMoreButton";
 import Linkify from "@/components/linkify";
 import UserToolTip from "../userTooltip";
 import { Media } from "@prisma/client";
+import LikeButton from "../likeButton";
 import { PostData } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
-import LikeButton from "../likeButton";
 
 export default function Post({ post }: { post: PostData }) {
   const { user } = useSession();
   return (
-    <article className="group/post space-y-3 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
-      <div className="flex justify-between gap-3">
-        <div className="flex flex-wrap gap-3">
-          <UserToolTip user={post.user}>
-            <Link href={"#users/" + post.user.username}>
-              <UserAvatar user={post.user} />
-            </Link>
-          </UserToolTip>
-          <div>
+    <article className="group/post space-y-2 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
+      <Link href={"/posts/" + post.id}>
+        <div className="flex justify-between gap-3">
+          <div className="flex flex-wrap gap-3">
             <UserToolTip user={post.user}>
-              <Link
-                href={"/users/" + post.user.username}
-                className="block font-medium hover:underline"
-              >
-                {post.user.displayName}
+              <Link href={"#users/" + post.user.username}>
+                <UserAvatar user={post.user} />
               </Link>
             </UserToolTip>
-            <Link
-              href={"/posts/" + post.id}
-              className="block text-sm text-muted-foreground hover:underline"
-            >
-              {formatRelativeDate(post.createdAt as Date)}
-            </Link>
+            <div>
+              <UserToolTip user={post.user}>
+                <Link
+                  href={"/users/" + post.user.username}
+                  className="block font-medium hover:underline"
+                >
+                  {post.user.displayName}
+                </Link>
+              </UserToolTip>
+              <span className="block text-sm text-muted-foreground">
+                {formatRelativeDate(post.createdAt as Date)}
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="inline-flex gap-1">
-          <LikeButton
-            postId={post.id}
-            intialState={{
-              likes: post._count.likes,
-              isLikedByUser: post.likes.some(
-                (u) => u.likedByUserId === user?.id,
-              ),
-            }}
-          />
+
           {post.userId === user.id && (
             <PostMoreButton
               post={post}
@@ -57,11 +47,29 @@ export default function Post({ post }: { post: PostData }) {
             />
           )}
         </div>
+        <Linkify>
+          <div className="whitespace-pre-wrap break-words">{post.content}</div>
+        </Linkify>
+        {!!post.media.length && <MediaPreviews medias={post.media} />}
+      </Link>
+      <hr />
+      <div className="flex justify-between">
+        <LikeButton
+          postId={post.id}
+          intialState={{
+            likes: post._count.likes,
+            isLikedByUser: post.likes.some((u) => u.likedByUserId === user?.id),
+          }}
+        />
+        <BookMarkButton
+          postId={post.id}
+          intialState={{
+            isBookmarkedByUser: post.bookmarks.some(
+              (b) => b.bookmarkedByUserId === user?.id,
+            ),
+          }}
+        />
       </div>
-      <Linkify>
-        <div className="whitespace-pre-wrap break-words">{post.content}</div>
-      </Linkify>
-      {!!post.media.length && <MediaPreviews medias={post.media} />}
     </article>
   );
 }

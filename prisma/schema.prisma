@@ -11,8 +11,8 @@ datasource db {
 }
 
 model User {
-  id           String    @id
-  username     String    @unique
+  id           String     @id
+  username     String     @unique
   displayName  String
   email        String
   passwordHash String?
@@ -21,11 +21,12 @@ model User {
   bio          String?
   sessions     Session[]
   posts        Post[]
-  following    Follow[]  @relation("Following")
-  followers    Follow[]  @relation("Followers")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  likes         Like[]
+  likes        Like[]
+  bookmarks    Bookmark[]
+  following    Follow[]   @relation("Following")
+  followers    Follow[]   @relation("Followers")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
 
   @@map("users")
 }
@@ -51,14 +52,15 @@ model Follow {
 }
 
 model Post {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   content   String
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   media     Media[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  likes      Like[]
+  likes     Like[]
+  bookmarks Bookmark[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 
   @@map("posts")
 }
@@ -103,6 +105,16 @@ model Like {
 
   @@unique([postId, likedByUserId])
   @@map("like")
+}
+
+model Bookmark {
+  postId             String
+  post               Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  bookmarkedByUserId String
+  bookmarkedBy       User   @relation(fields: [bookmarkedByUserId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, bookmarkedByUserId])
+  @@map("bookmark")
 }
 
 enum Authority {

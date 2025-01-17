@@ -7,7 +7,7 @@ export default function useLikeInfo(postId: string, initialState: LikeInfo) {
     queryKey: ["like-info", postId],
     queryFn: async () => {
       const data = await kyInstance
-        .get("/api/posts/" + postId)
+        .get("/api/posts/" + postId + "/likes")
         .json<LikeInfo>();
       return data;
     },

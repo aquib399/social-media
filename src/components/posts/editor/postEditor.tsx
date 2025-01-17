@@ -150,6 +150,7 @@ export function AddMediaButton({ onFilesSelected, disabled }: addMediaProps) {
       <Button
         variant="ghost"
         size="icon"
+        aria-label="Add media"
         onClick={() => fileInputRef.current?.click()}
         disabled={disabled}
       >

@@ -24,11 +24,11 @@ export default function LikeButton({
   const { data } = useLikeInfo(postId, intialState);
   const queryKey: QueryKey = ["like-info", postId];
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async () =>
       data.isLikedByUser
-        ? kyInstance.delete("/api/posts/" + postId)
-        : kyInstance.post("/api/posts/" + postId),
+        ? kyInstance.delete("/api/posts/" + postId + "/likes")
+        : kyInstance.post("/api/posts/" + postId + "/likes"),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey });
       const previousData = queryClient.getQueryData<LikeInfo>(queryKey);
@@ -39,6 +39,7 @@ export default function LikeButton({
           isLikedByUser: !previousData?.isLikedByUser,
         };
       });
+      toast({ title: "Post " + (data.isLikedByUser ? "unliked" : "liked") });
       return { previousData };
     },
     onError(error, variables, context) {
@@ -55,11 +56,21 @@ export default function LikeButton({
     <Button
       onClick={() => mutate()}
       variant={"ghost"}
+      disabled={isPending}
+      title="Like Post"
       {...props}
-      className={cn("flex items-center gap-1", props?.className)}
+      className={cn(
+        "flex items-center gap-x-1",
+        isPending && "animate-pulse",
+        props?.className,
+      )}
     >
-      <span>{Number(data.likes)}</span>
-      <Heart stroke="red" className={cn(data?.isLikedByUser && "fill-red-500")} />
+      <span className="tabular-nums font-medium">{Number(data.likes)}</span>
+      <Heart
+        stroke="red"
+        size={20}
+        className={cn(data?.isLikedByUser && "fill-red-500")}
+      />
     </Button>
   );
 }
