@@ -1,7 +1,7 @@
 import { useSession } from "@/app/(main)/sessionProvider";
 import { useToast } from "@/hooks/use-toast";
 import { PostsPage } from "@/lib/types";
-import { submitPost } from "./actions";
+import { editPost, submitPost } from "./actions";
 import {
   useMutation,
   InfiniteData,
@@ -67,6 +67,58 @@ export function useSubmitPostMutation() {
         variant: "destructive",
         title: "Somewthing went wrong",
         description: "Failed to posts. Please try again",
+      });
+    },
+  });
+  return mutation;
+}
+
+export function useUpdatePostMutation() {
+  const { toast } = useToast();
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: editPost,
+    onSuccess: async (updatedPost) => {
+      if (updatedPost instanceof Error)
+        throw new Error("Internal server error");
+
+      const queryFilter: QueryFilters<InfiniteData<PostsPage, string | null>> =
+        {
+          queryKey: ["post-feed"],
+        };
+
+      await queryClient.cancelQueries(queryFilter);
+
+      queryClient.setQueriesData<InfiniteData<PostsPage, string | null>>(
+        queryFilter,
+        //@ts-ignore
+        (oldData) => {
+          if (!oldData) return;
+          return {
+            pageParams: oldData.pageParams,
+            pages: oldData.pages.map((post) => ({
+              nextCursor: post.nextCursor,
+              posts: post.posts.map((post) =>
+                post.id === updatedPost.id ? updatedPost : post,
+              ),
+            })),
+          };
+        },
+      );
+      toast({
+        title: "Post created",
+        description: "Your post has been updated successfully",
+      });
+    },
+
+    onError(error) {
+      console.error("Mutation error: ", error);
+      toast({
+        variant: "destructive",
+        title: "Somewthing went wrong",
+        description: "Failed to update post. Please try again",
       });
     },
   });

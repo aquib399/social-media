@@ -1,17 +1,17 @@
 import { getPostDataInclude, UserData } from "@/lib/types";
+import FollowButton from "@/components/followButton";
 import { notFound, redirect } from "next/navigation";
-import { validateRequest } from "@/auth";
-import prisma from "@/lib/prisma";
-import { cache } from "react";
-import { Metadata } from "next";
-import Post from "@/components/posts/post";
 import UserToolTip from "@/components/userTooltip";
-import Link from "next/link";
 import UserAvatar from "@/components/userAvatar";
 import Linkify from "@/components/linkify";
-import FollowButton from "@/components/followButton";
+import Post from "@/components/posts/post";
+import { validateRequest } from "@/auth";
+import prisma from "@/lib/prisma";
+import { Metadata } from "next";
+import { cache } from "react";
+import Link from "next/link";
 
-interface pageProps {
+interface PostPageProps {
   params: { postId: string };
 }
 
@@ -28,7 +28,7 @@ const getPost = cache(async (postId: string, loggedInUserId: string) => {
 
 export const generateMetadata = async ({
   params: { postId },
-}: pageProps): Promise<Metadata> => {
+}: PostPageProps): Promise<Metadata> => {
   const { user } = await validateRequest();
   if (!user) return {};
 
@@ -59,9 +59,9 @@ export const generateMetadata = async ({
   };
 };
 
-export default async function PostPage({ params: { postId } }: pageProps) {
+export default async function PostPage({ params: { postId } }: PostPageProps) {
   const { user } = await validateRequest();
-  if (!user) return redirect("/signin");
+  if (!user) redirect("/signin");
   const post = await getPost(postId, user.id);
   return (
     <section className="flex w-full min-w-0 gap-5">
@@ -73,7 +73,7 @@ export default async function PostPage({ params: { postId } }: pageProps) {
   );
 }
 
-export async function UserInfoSideBar({ user }: { user: UserData }) {
+async function UserInfoSideBar({ user }: { user: UserData }) {
   const { user: loggedUser } = await validateRequest();
   if (!loggedUser) return;
   return (

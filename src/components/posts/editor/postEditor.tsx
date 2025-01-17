@@ -1,10 +1,11 @@
 "use client";
+import { useSubmitPostMutation, useUpdatePostMutation } from "./mutations";
 import { LoadingButton } from "@/components/loadingButton";
 import { useSession } from "@/app/(main)/sessionProvider";
 import useMediaUpload, { Media } from "./useMediaUpload";
 import { EditorContent, useEditor } from "@tiptap/react";
 import Placeholder from "@tiptap/extension-placeholder";
-import { useSubmitPostMutation } from "./mutations";
+import { useSearchParams } from "next/navigation";
 import UserAvatar from "@/components/userAvatar";
 import { useDropzone } from "@uploadthing/react";
 import { Button } from "@/components/ui/button";
@@ -17,8 +18,11 @@ import "./styles.css";
 
 export default function PostEditor() {
   const { user } = useSession();
+  const searchParams = useSearchParams();
+  const postId = searchParams?.get("edit");
 
-  const mutation = useSubmitPostMutation();
+  const createPostMutation = useSubmitPostMutation();
+  const updatePostMutation = useUpdatePostMutation();
 
   const {
     medias,
@@ -28,6 +32,7 @@ export default function PostEditor() {
     removeMedia,
     handleStartUpload,
   } = useMediaUpload();
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: handleStartUpload,
   });
@@ -52,18 +57,26 @@ export default function PostEditor() {
     }) || "";
 
   function onSubmit() {
-    mutation.mutate(
-      {
-        content: input,
-        mediaIds: medias.map((media) => media.mediaId).filter(Boolean),
+    const postContent = {
+      content: input,
+      mediaIds: medias.map((media) => media.mediaId).filter(Boolean),
+    };
+    const otherProps = {
+      onSuccess: () => {
+        editor?.commands.clearContent();
+        reset();
       },
-      {
-        onSuccess: () => {
-          editor?.commands.clearContent();
-          reset();
+    };
+
+    if (postId)
+      updatePostMutation.mutate(
+        {
+          input: postContent,
+          postId,
         },
-      },
-    );
+        otherProps,
+      );
+    else createPostMutation.mutate(postContent, otherProps);
   }
   function onPaste(e: ClipboardEvent<HTMLInputElement>) {
     const files = Array.from(e.clipboardData?.items)
@@ -111,12 +124,14 @@ export default function PostEditor() {
           disabled={isUploading || medias.length > 5}
         />
         <LoadingButton
-          isLoading={mutation.isPending}
+          isLoading={
+            createPostMutation.isPending || updatePostMutation.isPending
+          }
           onClick={onSubmit}
-          disabled={!input.trim()}
+          disabled={!input.trim() || isUploading}
           className="min-w-20"
         >
-          Post
+          {postId ? "Update" : "Post"}
         </LoadingButton>
       </div>
     </div>

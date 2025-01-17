@@ -25,6 +25,7 @@ model User {
   followers    Follow[]  @relation("Followers")
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+  likes         Like[]
 
   @@map("users")
 }
@@ -57,6 +58,7 @@ model Post {
   media     Media[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  likes      Like[]
 
   @@map("posts")
 }
@@ -91,6 +93,16 @@ model Media {
   updatedAt DateTime  @updatedAt
 
   @@map("media")
+}
+
+model Like {
+  postId        String
+  post          Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  likedByUserId String
+  likedBy       User   @relation(fields: [likedByUserId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, likedByUserId])
+  @@map("like")
 }
 
 enum Authority {

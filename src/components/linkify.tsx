@@ -49,7 +49,7 @@ function LinkifyHashtag({ children }: LinkifyProps) {
           {match}
         </Link>
       )}
-      regex={/(#[a-zA-Z0-9]+)/}
+      regex={/(#[a-zA-Z0-9_-]+)/}
     >
       {children}
     </LinkIt>

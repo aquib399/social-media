@@ -1,4 +1,4 @@
-import { MoreHorizontal, Trash2 } from "lucide-react";
+import { MoreHorizontal, PenLine, Trash2 } from "lucide-react";
 import DeletePostDialog from "./deletePostDialoag";
 import { PostData } from "@/lib/types";
 import { Button } from "../ui/button";
@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
 } from "../ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 interface PostMoreButtonProps {
   post: PostData;
@@ -19,6 +20,7 @@ export default function PostMoreButton({
   className,
 }: PostMoreButtonProps) {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <DropdownMenu>
@@ -28,10 +30,16 @@ export default function PostMoreButton({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        <DropdownMenuItem onClick={() => router.replace(`/?edit=${post.id}`)}>
+          <span className="flex items-center gap-3 text-primary">
+            <PenLine className="size-4" />
+            Edit Post
+          </span>
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setOpen(true)}>
           <span className="flex items-center gap-3 text-destructive">
             <Trash2 className="size-4" />
-            Delete Post
+            Delete
           </span>
         </DropdownMenuItem>
       </DropdownMenuContent>

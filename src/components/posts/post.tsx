@@ -10,6 +10,7 @@ import { Media } from "@prisma/client";
 import { PostData } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
+import LikeButton from "../likeButton";
 
 export default function Post({ post }: { post: PostData }) {
   const { user } = useSession();
@@ -39,12 +40,23 @@ export default function Post({ post }: { post: PostData }) {
             </Link>
           </div>
         </div>
-        {post.userId === user.id && (
-          <PostMoreButton
-            post={post}
-            className="opacity-0 transition-opacity group-hover/post:opacity-100"
+        <div className="inline-flex gap-1">
+          <LikeButton
+            postId={post.id}
+            intialState={{
+              likes: post._count.likes,
+              isLikedByUser: post.likes.some(
+                (u) => u.likedByUserId === user?.id,
+              ),
+            }}
           />
-        )}
+          {post.userId === user.id && (
+            <PostMoreButton
+              post={post}
+              className="opacity-0 transition-opacity group-hover/post:opacity-100"
+            />
+          )}
+        </div>
       </div>
       <Linkify>
         <div className="whitespace-pre-wrap break-words">{post.content}</div>
