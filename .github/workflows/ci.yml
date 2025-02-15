@@ -23,7 +23,18 @@ jobs:
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
-
+      - name: Debug Environment Variables
+        run: |
+          echo "Checking environment variables..."
+          if [ -z "${{ secrets.DATABASE_URL }}" ]; then
+            echo "ERROR: DATABASE_URL is not set!"
+            exit 1
+          fi
+          if [ -z "${{ secrets.UPLOADTHING_TOKEN }}" ]; then
+            echo "ERROR: UPLOADTHING_TOKEN is not set!"
+            exit 1
+          fi
+          echo "All required secrets are set."
       - name: Set up environment variables
         env:
           DIRECT_DATABASE_URL: ${{ secrets.DIRECT_DATABASE_URL }}
