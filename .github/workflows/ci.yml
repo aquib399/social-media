@@ -11,6 +11,18 @@ on:
 jobs:
   checks:
     runs-on: ubuntu-latest
+    env:
+      NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+      PRISMA_DISABLE_WARNINGS: ${{ secrets.PRISMA_DISABLE_WARNINGS }}
+      CRON_SECRET: ${{ secrets.CRON_SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DIRECT_DATABASE_URL: ${{ secrets.DIRECT_DATABASE_URL }}
+      UPLOADTHING_SECRET_KEY: ${{ secrets.UPLOADTHING_SECRET_KEY }}
+      UPLOADTHING_TOKEN: ${{ secrets.UPLOADTHING_TOKEN }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}
+      GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
 
     steps:
       - name: Checkout code
@@ -23,27 +35,17 @@ jobs:
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
+
       - name: Debug Environment Variables
         run: |
           echo "Checking environment variables..."
-          if [ -z "${{ secrets.DATABASE_URL }}" ]; then
-            echo "ERROR: DATABASE_URL is not set!"
-            exit 1
-          fi
-          if [ -z "${{ secrets.UPLOADTHING_TOKEN }}" ]; then
-            echo "ERROR: UPLOADTHING_TOKEN is not set!"
-            exit 1
-          fi
+          for var in NEXT_PUBLIC_SITE_URL PRISMA_DISABLE_WARNINGS CRON_SECRET DATABASE_URL DIRECT_DATABASE_URL UPLOADTHING_SECRET_KEY UPLOADTHING_TOKEN GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET GITHUB_CLIENT_ID GITHUB_CLIENT_SECRET; do
+            if [ -z "${!var}" ]; then
+              echo "ERROR: $var is not set!"
+              exit 1
+            fi
+          done
           echo "All required secrets are set."
-      - name: Set up environment variables
-        env:
-          DIRECT_DATABASE_URL: ${{ secrets.DIRECT_DATABASE_URL }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          UPLOADTHING_TOKEN: ${{ secrets.UPLOADTHING_TOKEN }}
-          UPLOADTHING_SECRET_KEY: ${{ secrets.UPLOADTHING_SECRET_KEY }}
-          UPLOADTHING_APP_ID: ${{ secrets.UPLOADTHING_APP_ID }}
-          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
-        run: echo "Environment variables are set."
 
       - name: Lint code with ESLint
         run: npm run lint
