@@ -1,5 +1,6 @@
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import { Lucia, Session, User } from "lucia";
+import { Lucia, Session, TimeSpan, User } from "lucia";
+import { GitHub, Google } from "arctic";
 import { cookies } from "next/headers";
 import prisma from "./lib/prisma";
 import { cache } from "react";
@@ -8,21 +9,15 @@ const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
-    expires: false,
+    expires: true,
     attributes: {
       secure: process.env.NODE_ENV === "production",
     },
   },
   getUserAttributes(databaseUserAttributes) {
-    return {
-      id: databaseUserAttributes.id,
-      username: databaseUserAttributes.username,
-      email: databaseUserAttributes.email,
-      displayName: databaseUserAttributes.displayName,
-      avatarUrl: databaseUserAttributes.avatarUrl,
-      googleId: databaseUserAttributes.googleId,
-    };
+    return { ...databaseUserAttributes };
   },
+  sessionExpiresIn: new TimeSpan(1, "w"),
 });
 
 declare module "lucia" {
@@ -39,7 +34,18 @@ interface DatabaseUserAttributes {
   avatarUrl: string | null;
   googleId: string | null;
   email: string | null;
+  githubId: string | null;
 }
+
+export const google = new Google(
+  process.env.GOOGLE_CLIENT_ID!,
+  process.env.GOOGLE_CLIENT_SECRET!,
+  `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback/google`,
+);
+export const github = new GitHub(
+  process.env.GITHUB_CLIENT_ID!,
+  process.env.GITHUB_CLIENT_SECRET!,
+);
 
 export const validateRequest = cache(
   async (): Promise<

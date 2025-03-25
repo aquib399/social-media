@@ -1,12 +1,13 @@
 import { useSession } from "@/app/(main)/sessionProvider";
+import { editPost, submitPost } from "./actions";
 import { useToast } from "@/hooks/use-toast";
 import { PostsPage } from "@/lib/types";
-import { editPost, submitPost } from "./actions";
 import {
   useMutation,
   InfiniteData,
   QueryFilters,
   useQueryClient,
+  Query,
 } from "@tanstack/react-query";
 
 export function useSubmitPostMutation() {
@@ -17,16 +18,17 @@ export function useSubmitPostMutation() {
   const mutation = useMutation({
     mutationFn: submitPost,
     onSuccess: async (newPost) => {
-      const queryFilter = {
-        queryKey: ["post-feed"],
-        predicate(query) {
-          return (
-            query.queryKey.includes("for-you") ||
-            (query.queryKey.includes("user-posts") &&
-              query.queryKey.includes(user?.id!))
-          );
-        },
-      } satisfies QueryFilters;
+      const queryFilter: QueryFilters<InfiniteData<PostsPage, string | null>> =
+        {
+          queryKey: ["post-feed"] as const,
+          predicate(query) {
+            return (
+              query.queryKey.includes("for-you") ||
+              (query.queryKey.includes("user-posts") &&
+                query.queryKey.includes(user?.id!))
+            );
+          },
+        };
       await queryClient.cancelQueries(queryFilter);
       queryClient.setQueriesData<InfiniteData<PostsPage, string | null>>(
         //@ts-ignore
@@ -51,7 +53,18 @@ export function useSubmitPostMutation() {
       queryClient.invalidateQueries({
         queryKey: queryFilter.queryKey,
         predicate(query) {
-          return queryFilter.predicate(query) && !query.state.data;
+          return !!(
+            queryFilter.predicate &&
+            queryFilter.predicate(
+              query as Query<
+                InfiniteData<PostsPage, string | null>,
+                Error,
+                InfiniteData<PostsPage, string | null>,
+                readonly unknown[]
+              >,
+            ) &&
+            !query.state.data
+          );
         },
       });
 

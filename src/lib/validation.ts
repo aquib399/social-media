@@ -6,7 +6,13 @@ export const signupSchema = z.object({
     .string()
     .nonempty()
     .trim()
-    .regex(/^[a-zA-Z-0-9_-]+$/, "Special characters are not allowed"),
+    .regex(/^[a-zA-Z -0-9_-]+$/, "Special characters are not allowed"),
+  displayName: z
+    .string({ message: "Display name is required" })
+    .nonempty("Display name is required")
+    .min(3, "Display name must be at least 3 characters long")
+    .trim()
+    .regex(/^[a-zA-Z -0-9_-]+$/, "Special characters are not allowed"),
   password: z
     .string()
     .nonempty()
@@ -15,7 +21,7 @@ export const signupSchema = z.object({
 export type SignUpValues = z.infer<typeof signupSchema>;
 
 export const signInSchema = z.object({
-  username: z.string().nonempty().trim(),
+  indentifier: z.string().nonempty().trim(),
   password: z
     .string()
     .nonempty()

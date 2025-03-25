@@ -64,7 +64,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function UserPage({params: { username }}: UserPageProps) {
+export default async function UserPage({
+  params: { username },
+}: UserPageProps) {
   const { user: loggedUser } = await validateRequest();
   if (!loggedUser)
     return (

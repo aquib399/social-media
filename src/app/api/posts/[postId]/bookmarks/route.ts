@@ -3,7 +3,7 @@ import { BookmarkInfo } from "@/lib/types";
 import prisma from "@/lib/prisma";
 
 export async function GET(
-  req: Request,
+  _: Request,
   { params: { postId } }: { params: { postId: string } },
 ) {
   try {
@@ -13,7 +13,7 @@ export async function GET(
 
     const bookmark = await prisma.bookmark.findUnique({
       where: {
-        postId_bookmarkedByUserId: {
+        bookmarkedByUserId_postId: {
           bookmarkedByUserId: loggedUser.id,
           postId,
         },
@@ -23,7 +23,7 @@ export async function GET(
     const data: BookmarkInfo = {
       isBookmarkedByUser: bookmark?.bookmarkedByUserId === loggedUser.id,
     };
-		console.log({data})
+    console.log({ data });
 
     return Response.json(data);
   } catch (error) {
@@ -33,7 +33,7 @@ export async function GET(
 }
 
 export async function POST(
-  req: Request,
+  _: Request,
   { params: { postId } }: { params: { postId: string } },
 ) {
   try {
@@ -43,7 +43,7 @@ export async function POST(
 
     await prisma.bookmark.upsert({
       where: {
-        postId_bookmarkedByUserId: {
+        bookmarkedByUserId_postId: {
           bookmarkedByUserId: loggedUser.id,
           postId,
         },
@@ -54,7 +54,7 @@ export async function POST(
       },
       update: {},
     });
-    return new Response();
+    return Response.json({ success: true });
   } catch (error) {
     console.error("Bookmark error", error);
     return Response.json({ error: "Internal server error" }, { status: 500 });
@@ -62,7 +62,7 @@ export async function POST(
 }
 
 export async function DELETE(
-  req: Request,
+  _: Request,
   { params: { postId } }: { params: { postId: string } },
 ) {
   try {

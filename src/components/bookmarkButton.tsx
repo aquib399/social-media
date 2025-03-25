@@ -25,10 +25,11 @@ export default function BookMarkButton({
   const queryKey: QueryKey = ["bookmark-info", postId];
 
   const { mutate, isPending } = useMutation({
+    // NOTE: i dont have any idead why this is working opposite
     mutationFn: async () =>
       data.isBookmarkedByUser
-        ? kyInstance.delete("/api/posts/" + postId + "/bookmarks")
-        : kyInstance.post("/api/posts/" + postId + "/bookmarks"),
+        ? kyInstance.post("/api/posts/" + postId + "/bookmarks")
+        : kyInstance.delete("/api/posts/" + postId + "/bookmarks"),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey });
       const previousData = queryClient.getQueryData<BookmarkInfo>(queryKey);
@@ -42,7 +43,7 @@ export default function BookMarkButton({
 
       return { previousData };
     },
-    onError(error, variables, context) {
+    onError(error, _, context) {
       console.error("Follow user error: ", error);
       queryClient.setQueryData<BookmarkInfo>(queryKey, context?.previousData);
       toast({

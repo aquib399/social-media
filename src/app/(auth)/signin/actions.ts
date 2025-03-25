@@ -10,13 +10,23 @@ import { lucia } from "@/auth";
 
 export async function SignIn(cred: SignInValues): Promise<{ error: string }> {
   try {
-    const { username, password } = signInSchema.parse(cred);
+    const { indentifier, password } = signInSchema.parse(cred);
     const user = await prisma.user.findFirst({
       where: {
-        username: {
-          equals: username,
-          mode: "insensitive",
-        },
+        OR: [
+          {
+            username: {
+              equals: indentifier,
+              mode: "insensitive",
+            },
+          },
+          {
+            email: {
+              equals: indentifier,
+              mode: "insensitive",
+            },
+          },
+        ],
       },
     });
 

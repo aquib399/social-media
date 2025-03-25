@@ -25,7 +25,12 @@ export default function PostMoreButton({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon" aria-label="More options" variant="ghost" className={className}>
+        <Button
+          size="icon"
+          aria-label="More options"
+          variant="ghost"
+          className={className}
+        >
           <MoreHorizontal className="size-5 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>

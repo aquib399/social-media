@@ -55,6 +55,7 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-geist-sans)"],
         mono: ["var(--font-geist-mono)"],
+        paytoneOne: ["var(--font-paytoneOne)"],
       },
       borderRadius: {
         lg: "var(--radius)",
