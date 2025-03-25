@@ -43,8 +43,8 @@ export const google = new Google(
   `${process.env.NEXT_PUBLIC_SITE_URL}/api/auth/callback/google`,
 );
 export const github = new GitHub(
-  process.env.GITHUB_CLIENT_ID!,
-  process.env.GITHUB_CLIENT_SECRET!,
+  process.env.GIT_CLIENT_ID!,
+  process.env.GIT_CLIENT_SECRET!,
 );
 
 export const validateRequest = cache(
