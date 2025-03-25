@@ -4,7 +4,9 @@ import { github } from "@/auth";
 
 export async function GET() {
   const state = generateState();
-  const url = await github.createAuthorizationURL(state, { scopes: ["user:email"] });
+  const url = await github.createAuthorizationURL(state, {
+    scopes: ["user:email"],
+  });
 
   const cookieSet = cookies();
 

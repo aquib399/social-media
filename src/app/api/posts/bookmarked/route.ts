@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
       take: pageSize + 1,
       cursor: cursor
         ? {
-            postId_bookmarkedByUserId: {
+            bookmarkedByUserId_postId: {
               postId: cursor,
               bookmarkedByUserId: user.id,
             },
