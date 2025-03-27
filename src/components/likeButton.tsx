@@ -25,10 +25,11 @@ export default function LikeButton({
   const queryKey: QueryKey = ["like-info", postId];
 
   const { mutate, isPending } = useMutation({
+    // NOTE: i dont have any idead why this is working opposite
     mutationFn: async () =>
       data.isLikedByUser
-        ? kyInstance.delete("/api/posts/" + postId + "/likes")
-        : kyInstance.post("/api/posts/" + postId + "/likes"),
+        ? kyInstance.post("/api/posts/" + postId + "/likes")
+        : kyInstance.delete("/api/posts/" + postId + "/likes"),
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey });
       const previousData = queryClient.getQueryData<LikeInfo>(queryKey);
@@ -42,7 +43,7 @@ export default function LikeButton({
       toast({ title: "Post " + (data.isLikedByUser ? "unliked" : "liked") });
       return { previousData };
     },
-    onError(error, variables, context) {
+    onError(error, _, context) {
       console.error("Follow user error: ", error);
       queryClient.setQueryData<LikeInfo>(queryKey, context?.previousData);
       toast({
