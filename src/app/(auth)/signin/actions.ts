@@ -8,9 +8,20 @@ import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
 import { lucia } from "@/auth";
 
-export async function SignIn(cred: SignInValues): Promise<{ error: string }> {
+export async function SignIn(
+  cred: SignInValues,
+  demo?: boolean,
+): Promise<{ error: string }> {
   try {
-    const { indentifier, password } = signInSchema.parse(cred);
+    let indentifier, password;
+    if (demo) {
+      indentifier = process.env.DEMO_INDENTIFIER!;
+      password = process.env.DEMO_PASSWORD!;
+    } else {
+      const data = signInSchema.parse(cred);
+      indentifier = data.indentifier;
+      password = data.password;
+    }
     const user = await prisma.user.findFirst({
       where: {
         OR: [

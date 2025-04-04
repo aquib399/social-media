@@ -6,29 +6,30 @@ generator client {
 datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
-  // url       = env("DIRECT_DATABASE_URL")
   directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model User {
-  id           String     @id
-  username     String     @unique
-  displayName  String
-  email        String
-  passwordHash String?
-  googleId     String?    @unique
-  githubId     String?    @unique
-  avatarUrl    String?
-  bio          String?
-  sessions     Session[]
-  posts        Post[]
-  likes        Like[]
-  comments     Comment[]
-  bookmarks    Bookmark[]
-  following    Follow[]   @relation("Following")
-  followers    Follow[]   @relation("Followers")
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  id                     String         @id
+  username               String         @unique
+  displayName            String
+  email                  String
+  passwordHash           String?
+  googleId               String?        @unique
+  githubId               String?        @unique
+  avatarUrl              String?
+  bio                    String?
+  sessions               Session[]
+  posts                  Post[]
+  likes                  Like[]
+  comments               Comment[]
+  bookmarks              Bookmark[]
+  following              Follow[]       @relation("Following")
+  followers              Follow[]       @relation("Followers")
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+  recceivedNotifications Notification[] @relation("Recipient")
+  issuedNotifications    Notification[] @relation("Issuer")
 
   @@map("users")
 }
@@ -54,16 +55,17 @@ model Follow {
 }
 
 model Post {
-  id        String     @id @default(uuid())
-  content   String
-  userId    String
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  media     Media[]
-  likes     Like[]
-  bookmarks Bookmark[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  comments  Comment[]
+  id                  String         @id @default(uuid())
+  content             String
+  userId              String
+  user                User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  media               Media[]
+  likes               Like[]
+  bookmarks           Bookmark[]
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  comments            Comment[]
+  linkedNotifications Notification[]
 
   @@map("posts")
 }
@@ -147,4 +149,26 @@ enum MediaType {
   image
   video
   audio
+}
+
+model Notification {
+  id          String           @id @default(cuid())
+  recipientId String
+  recipient   User             @relation("Recipient", fields: [recipientId], references: [id], onDelete: Cascade)
+  issuerId    String
+  issuer      User             @relation("Issuer", fields: [issuerId], references: [id], onDelete: Cascade)
+  postId      String?
+  post        Post?            @relation(fields: [postId], references: [id], onDelete: Cascade)
+  type        NotificationType
+  read        Boolean          @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@map("notifications")
+}
+
+enum NotificationType {
+  LIKE
+  FOLLOW
+  COMMENT
 }

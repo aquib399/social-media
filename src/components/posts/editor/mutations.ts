@@ -3,11 +3,11 @@ import { editPost, submitPost } from "./actions";
 import { useToast } from "@/hooks/use-toast";
 import { PostsPage } from "@/lib/types";
 import {
+  Query,
   useMutation,
   InfiniteData,
   QueryFilters,
   useQueryClient,
-  Query,
 } from "@tanstack/react-query";
 
 export function useSubmitPostMutation() {

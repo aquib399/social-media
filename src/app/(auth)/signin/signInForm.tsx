@@ -2,16 +2,17 @@
 
 import { signInSchema, type SignInValues } from "@/lib/validation";
 import { LoadingButton } from "@/components/loadingButton";
+import { useEffect, useState, useTransition } from "react";
 import GoogleSignInButton from "./google/google-sign-in";
 import GithubSignInButton from "./github/github-sign-in";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@/components/ui/separator";
 import { LockIcon, MailIcon } from "lucide-react";
-import { useState, useTransition } from "react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { useForm } from "react-hook-form";
 import { SignIn } from "./actions";
-import { toast } from "sonner";
 import Link from "next/link";
 import {
   Form,
@@ -33,7 +34,7 @@ import {
 export default function SigninForm() {
   const [error, setError] = useState<string | undefined>();
   const [isPending, startTransition] = useTransition();
-
+  const { toast } = useToast();
   const form = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -48,15 +49,45 @@ export default function SigninForm() {
       const { error } = await SignIn(data);
       if (error) {
         setError(error);
-        toast.error("Sign in failed", {
+        toast({
+          variant: "destructive",
+          title: "Sign in failed",
           description: error,
         });
       } else {
-        toast.success("Signed in successfully");
+        toast({ title: "Signed in successfully" });
       }
     });
   }
 
+  useEffect(() => {
+    const dismissToast = toast({
+      title: "You could use a public account",
+      description: "Please maintain professionalism with the account.",
+      duration: Infinity,
+      action: (
+        <Button
+          className="rounded bg-foreground px-3 py-1 text-background hover:bg-foreground/90"
+          onClick={() => {
+            SignIn({ indentifier: "", password: "" }, true).then(() => {
+              dismissToast.dismiss();
+              toast({
+                variant: "default",
+                title: "Login as a demo user",
+                description: "You can use the demo account to test the app.",
+              });
+            });
+          }}
+        >
+          Try Demo
+        </Button>
+      ),
+    });
+    return () => {
+      dismissToast.dismiss();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <section className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg">
@@ -139,8 +170,14 @@ export default function SigninForm() {
               </div>
 
               <div className="flex flex-col gap-2 sm:flex-row">
-                <GoogleSignInButton className="w-full rounded-md font-semibold" />
-                <GithubSignInButton className="w-full rounded-md font-semibold" />
+                <GoogleSignInButton
+                  variant={"outline"}
+                  className="w-full rounded-md font-semibold"
+                />
+                <GithubSignInButton
+                  variant={"outline"}
+                  className="w-full rounded-md font-semibold"
+                />
               </div>
             </form>
           </Form>

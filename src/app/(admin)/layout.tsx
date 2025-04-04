@@ -6,9 +6,9 @@ export default async function MainLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const result = await validateRequestAdmin();
+  const { result } = await validateRequestAdmin();
 
-  if (!result.result?.session)
+  if (!result?.session)
     return (
       <h1 className="grid h-screen w-full place-content-center text-2xl font-medium text-destructive">
         Unauthorized
@@ -16,7 +16,7 @@ export default async function MainLayout({
     );
   else
     return (
-      <SessionProvider value={result.result}>
+      <SessionProvider value={result}>
         <main className="flex min-h-screen flex-col">{children}</main>
       </SessionProvider>
     );

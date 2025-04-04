@@ -184,8 +184,14 @@ export default function AdminSignupForm() {
               </div>
 
               <div className="flex flex-col gap-2 sm:flex-row">
-                <GoogleSignInButton className="w-full rounded-md font-semibold" />
-                <GithubSignInButton className="w-full rounded-md font-semibold" />
+                <GoogleSignInButton
+                  variant={"outline"}
+                  className="w-full rounded-md font-semibold"
+                />
+                <GithubSignInButton
+                  variant={"outline"}
+                  className="w-full rounded-md font-semibold"
+                />
               </div>
             </form>
           </Form>

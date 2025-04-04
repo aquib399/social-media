@@ -2,6 +2,7 @@
 
 import { useSession } from "@/app/(main)/sessionProvider";
 import { cn, formatRelativeDate } from "@/lib/utils";
+import React, { Dispatch, useState } from "react";
 import UserAvatar from "@/components/userAvatar";
 import BookMarkButton from "../bookmarkButton";
 import PostMoreButton from "./postMoreButton";
@@ -12,13 +13,17 @@ import LikeButton from "../likeButton";
 import { PostData } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
+import { MessageSquare } from "lucide-react";
+import Comments from "../comments/comments";
 
 export default function Post({ post }: { post: PostData }) {
   const { user } = useSession();
+  const [showComments, setShowComments] = useState(false);
+
   return (
     <article className="group/post space-y-2 rounded-xl bg-card p-5 shadow-sm sm:rounded-2xl">
       <Link href={"/posts/" + post.id}>
-        <div className="flex justify-between gap-3">
+        <div className="flex justify-between gap-3" suppressHydrationWarning>
           <div className="flex flex-wrap gap-3">
             <UserToolTip user={post.user}>
               <Link href={"#users/" + post.user.username}>
@@ -54,13 +59,18 @@ export default function Post({ post }: { post: PostData }) {
       </Link>
       <hr />
       <div className="flex justify-between">
-        <LikeButton
-          postId={post.id}
-          intialState={{
-            likes: post._count.likes,
-            isLikedByUser: post.likes.some((u) => u.likedByUserId === user?.id),
-          }}
-        />
+        <div className="flex gap-2">
+          <LikeButton
+            postId={post.id}
+            intialState={{
+              likes: post._count.likes,
+              isLikedByUser: post.likes.some(
+                (u) => u.likedByUserId === user?.id,
+              ),
+            }}
+          />
+          <CommentButton post={post} setShowComments={setShowComments} />
+        </div>
         <BookMarkButton
           postId={post.id}
           intialState={{
@@ -70,6 +80,7 @@ export default function Post({ post }: { post: PostData }) {
           }}
         />
       </div>
+      {showComments && <Comments post={post} />}
     </article>
   );
 }
@@ -132,5 +143,24 @@ function MediaPreview({ media }: MediaPreviewProps) {
     <p className="w-full text-center text-destructive">
       Unsupported Media type
     </p>
+  );
+}
+
+interface CommentButtonProps {
+  post: PostData;
+  setShowComments: Dispatch<React.SetStateAction<boolean>>;
+}
+function CommentButton({ post, setShowComments }: CommentButtonProps) {
+  return (
+    <button
+      onClick={() => setShowComments((prev) => !prev)}
+      className="flex items-center gap-2"
+    >
+      <MessageSquare className="size-5" />
+      <span className="font-medium tabular-nums text-sm">
+        {post._count.comments}{" "}
+        <span className="hidden sm:inline">Comments</span>
+      </span>
+    </button>
   );
 }

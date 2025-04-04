@@ -13,9 +13,6 @@ export default function Navbar() {
           >
             Drift
           </Link>
-          <Link href={"/admin"} className="mr-auto text-2xl font-bold">
-            Admin
-          </Link>
           <SearchButton className="hidden sm:block" />
           <UserButton className="cursor-pointer" />
         </div>
