@@ -62,8 +62,8 @@ export default function SigninForm() {
 
   useEffect(() => {
     const dismissToast = toast({
-      title: "You could use a public account",
-      description: "Please maintain professionalism with the account.",
+      title: "Explore with a demo account",
+      description: "Use the demo account to experience the app's features.",
       duration: Infinity,
       action: (
         <Button
@@ -73,8 +73,9 @@ export default function SigninForm() {
               dismissToast.dismiss();
               toast({
                 variant: "default",
-                title: "Login as a demo user",
-                description: "You can use the demo account to test the app.",
+                title: "Logged in as demo user",
+                description:
+                  "Enjoy exploring the app! Please use the account responsibly.",
               });
             });
           }}
